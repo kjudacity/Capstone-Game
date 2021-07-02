@@ -13,14 +13,14 @@
 #include "platform.h"
 #include "ghost_figur.h"
 #include "pacman_figur.h"
-#include "labyrinth_observer.h"
+
 using namespace std;
 
 class Level;
 
-class Labyrinth {
+class Board {
 	public:
-		static Labyrinth* getInstance();
+		static Board* getInstance();
 		static void cleanUpInstance();
 
 		// At the left and right of the tunnel, there are two black rectangles,
@@ -105,7 +105,7 @@ class Labyrinth {
 		void setLabyrinthObserver(LabyrinthObserver* labyrinthObserver);
 
 	private:
-		static Labyrinth *instance;
+		static Board *instance;
 
 		//constructor and destructor
 		Labyrinth();

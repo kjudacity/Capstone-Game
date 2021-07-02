@@ -4,23 +4,23 @@
 #include <sstream>
 #include "level.h"
 
-Labyrinth *Labyrinth::instance = NULL;
+Board *Board::instance = NULL;
 
-Labyrinth *Labyrinth::getInstance() {
+Board *Board::getInstance() {
 	if (!instance) {
-		instance = new Labyrinth();
+		instance = new Board();
 	}
 	return instance;
 }
 
-void Labyrinth::cleanUpInstance() {
+void Board::cleanUpInstance() {
 	if (instance) {
 		delete instance;
 		instance = NULL;
 	}
 }
 
-Labyrinth::Labyrinth():
+Board::Board():
 	cnt_pill_animation(0),
 	punktestand(0),
 	lastPunktestand(0),
@@ -206,7 +206,7 @@ Labyrinth::Labyrinth():
 	level = Level::getInstance();
 }
 
-Labyrinth::~Labyrinth(){
+Board::~Board(){
 	SDL_FreeSurface(pille);
 	SDL_FreeSurface(score);
 	SDL_FreeSurface(infoFruit);
@@ -219,7 +219,7 @@ Labyrinth::~Labyrinth(){
 	}
 }
 
-void Labyrinth::draw_blocks() {
+void Board::draw_blocks() {
   	SDL_Rect b1, b2;
   	b1.x = Constants::LEFT_TUNNEL_BLOCK_X;
  	b2.x = Constants::RIGHT_TUNNEL_BLOCK_X;
@@ -231,7 +231,7 @@ void Labyrinth::draw_blocks() {
 	Screen::getInstance()->fillRect(&b2, 0, 0, 0);
 }
 
-void Labyrinth::init_pillen(bool firstInit) {
+void Board::init_pillen(bool firstInit) {
 	if (firstInit) {
 		int m = -1;
 		int s = 0;
@@ -295,7 +295,7 @@ void Labyrinth::init_pillen(bool firstInit) {
 	}
 }
 
-void Labyrinth::draw_pillen() {
+void Board::draw_pillen() {
 	Screen::getInstance()->draw(pillSurface, 0, 0);
 	int x, y;
 	for (int i = 0; i < 4; i++) {
@@ -308,16 +308,16 @@ void Labyrinth::draw_pillen() {
 	}
 }
 
-int Labyrinth::number_rails() const {
+int Board::number_rails() const {
 	return Constants::NUMBER_RAILS;
 }
 
-void Labyrinth::pill_animation() {
+void Board::pill_animation() {
 	cnt_pill_animation = (cnt_pill_animation + 1) % 5;
 	superpille = ar_superpille[cnt_pill_animation];
 }
 
-void Labyrinth::drawScoreValue() {
+void Board::drawScoreValue() {
 	if (punktestand != lastPunktestand || !score) {
 		ostringstream ostrPunktestand;
 		ostrPunktestand.str("0");
@@ -329,20 +329,20 @@ void Labyrinth::drawScoreValue() {
 	Screen::getInstance()->draw_dynamic_content(score, Constants::SCORE_X, Constants::SCORE_VALUE_Y);
 }
 
-void Labyrinth::drawLevelNumber() {
+void Board::drawLevelNumber() {
 	Screen::getInstance()->draw_dynamic_content(levelNumber, Constants::LEVEL_X, Constants::LEVEL_NUMBER_Y);
 }
 
-void Labyrinth::increaseBonusStage() {
+void Board::increaseBonusStage() {
 	if (bonus_stage < 1600)
 		bonus_stage <<= 1;  // bit shifting is faster than bonus_stage *= 2;
 }
 
-void Labyrinth::resetBonusStage() {
+void Board::resetBonusStage() {
 	bonus_stage = 200;
 }
 
-void Labyrinth::addScore(int value, int show_x, int show_y) {
+void Board::addScore(int value, int show_x, int show_y) {
 	punktestand += value;
 	// show the score at the specified position
 	ostringstream ostrScore;
@@ -353,12 +353,12 @@ void Labyrinth::addScore(int value, int show_x, int show_y) {
 	drawSmallScore();
 }
 
-void Labyrinth::drawSmallScore() {
+void Board::drawSmallScore() {
 	if (smallScore)
 		Screen::getInstance()->draw_dynamic_content(smallScore, smallScore_x, smallScore_y);
 }
 
-void Labyrinth::hideSmallScore() {
+void Board::hideSmallScore() {
 	if (smallScore) {
 		Screen::getInstance()->AddUpdateRects(smallScore_x, smallScore_y, smallScore->w, smallScore->h);
 		SDL_FreeSurface(smallScore);
@@ -366,23 +366,23 @@ void Labyrinth::hideSmallScore() {
 	}
 }
 
-void Labyrinth::addScore(int value) {
+void Board::addScore(int value) {
 	punktestand += value;
 }
 
-void Labyrinth::addBonusScore(int show_x, int show_y) {
+void Board::addBonusScore(int show_x, int show_y) {
 	addScore(bonus_stage, show_x, show_y);
 }
 
-int Labyrinth::getScore() {
+int Board::getScore() {
 	return punktestand;
 }
 
-int Labyrinth::getLevelNumber() {
+int Board::getLevelNumber() {
 	return level->getLevelNumber();
 }
 
-void Labyrinth::removePill(int idxPill) {
+void Board::removePill(int idxPill) {
 	if (idxPill >= 0) {
 		pillen[idxPill].sichtbar = 0;
 		if (pillSurface && bgSurface) {
@@ -401,20 +401,20 @@ void Labyrinth::removePill(int idxPill) {
 	}
 }
 
-int Labyrinth::getNumRemainingPills() const {
+int Board::getNumRemainingPills() const {
 	return cnt_pills;
 }
 
-void Labyrinth::setInitText(const char *text, int color) {
+void Board::setInitText(const char *text, int color) {
 	initText = Screen::getTextSurface(Screen::getFont(), text, Constants::getIndexedColor(color));
 }
 
-void Labyrinth::drawInitText() {
+void Board::drawInitText() {
 	if(initText)
 		Screen::getInstance()->draw_dynamic_content(initText, Constants::INIT_TEXT_X-(initText->w >> 1), Constants::INIT_TEXT_Y-(initText->h >> 1));
 }
 
-void Labyrinth::hideInitText() {
+void Board::hideInitText() {
 	if (initText) {
 		Screen::getInstance()->AddUpdateRects(Constants::INIT_TEXT_X-(initText->w >> 1), Constants::INIT_TEXT_Y-(initText->h >> 1), initText->w, initText->h);
 		SDL_FreeSurface(initText);
@@ -422,14 +422,14 @@ void Labyrinth::hideInitText() {
 	}
 }
 
-void Labyrinth::resetAllFigures() {
+void Board::resetAllFigures() {
 	for(int i = 0; i < Constants::TOTAL_NUM_GHOSTS; ++i)
 		Ghost::getGhostArray()[i]->reset();
 	Ghost::getGhostArray()[0]->set_leader(1);  // Blinky is the reference for redrawing
 	Pacman::getInstance()->reset();
 }
 
-void Labyrinth::nextLevel() {
+void Board::nextLevel() {
 	hideFruit();
 	drawScoreValue();
 	Screen::getInstance()->addUpdateClipRect();
@@ -439,7 +439,7 @@ void Labyrinth::nextLevel() {
 	resetLevel();
 }
 
-void Labyrinth::resetLevel(int level) {
+void Board::resetLevel(int level) {
 	Screen::getInstance()->clear();
 	hideFruit();
 	resetAllFigures();
@@ -468,7 +468,7 @@ void Labyrinth::resetLevel(int level) {
 		vec_observer.at(i)->setPanicMode(false);
 }
 
-void Labyrinth::loadLevelFruit() {
+void Board::loadLevelFruit() {
 	fruit = NULL;
 	switch(level->getLevelNumber()) {
 		case 1:
@@ -512,7 +512,7 @@ void Labyrinth::loadLevelFruit() {
 	drawInfoFruits();
 }
 
-void Labyrinth::startFruitRandomizer(int new_level) {
+void Board::startFruitRandomizer(int new_level) {
 	if(new_level)
 		cnt_displayed_fruits = 0;
 	if(cnt_displayed_fruits >= 2)
@@ -522,7 +522,7 @@ void Labyrinth::startFruitRandomizer(int new_level) {
 	next_fruit = getNumRemainingPills() - next_fruit;
 }
 
-void Labyrinth::checkFruit(int ms) {
+void Board::checkFruit(int ms) {
 	if(fruit) {
 		fruit_display_time -= ms;
 		if (fruit_display_time <= 0)
@@ -537,7 +537,7 @@ void Labyrinth::checkFruit(int ms) {
 	}
 }
 
-void Labyrinth::hideFruit() {
+void Board::hideFruit() {
 	if (fruit) {
 		Screen::getInstance()->AddUpdateRects(Constants::FRUIT_X, Constants::FRUIT_Y, fruit->w, fruit->h);
 		fruit = NULL;
@@ -550,26 +550,26 @@ void Labyrinth::hideFruit() {
 	}
 }
 
-int Labyrinth::fruitIsDisplayed() {
+int Board::fruitIsDisplayed() {
 	return (fruit != NULL);
 }
 
 // set fruit bonus
-void Labyrinth::setFruitBonus(int fruit_bonus) {
+void Board::setFruitBonus(int fruit_bonus) {
 	this->fruit_bonus = fruit_bonus;
 }
 
 // get fruit bonus
-int Labyrinth::getFruitBonus() const {
+int Board::getFruitBonus() const {
 	return fruit_bonus;
 }
 
-void Labyrinth::drawFruit() {
+void Board::drawFruit() {
 	if (fruit)
 		Screen::getInstance()->draw_dynamic_content(fruit, Constants::FRUIT_X, Constants::FRUIT_Y);
 }
 
-void Labyrinth::drawInfoFruits() {
+void Board::drawInfoFruits() {
 	if (infoFruit) {
 		for (int i = 0; i < 2-cnt_displayed_fruits; ++i)
 			Screen::getInstance()->draw(infoFruit, Constants::INFO_FRUITS_X+i*(infoFruit->w+Constants::INFO_FRUITS_DISTANCE), Constants::INFO_FRUITS_Y);
@@ -577,7 +577,7 @@ void Labyrinth::drawInfoFruits() {
 	}
 }
 
-void Labyrinth::getRailsForPoint(int x, int y, int *left, int *right, int *up, int *down) {
+void Board::getRailsForPoint(int x, int y, int *left, int *right, int *up, int *down) {
 	*left = *right = *up = *down = -1;
 	for (int i = 0; i < Constants::NUMBER_RAILS; ++i) {
 		if (array_rails[i]->y1 == y && array_rails[i]->y2 == y) {
@@ -602,12 +602,12 @@ void Labyrinth::getRailsForPoint(int x, int y, int *left, int *right, int *up, i
 	}
 }
 
-Sounds* Labyrinth::getSounds() {
-	std::cerr << "Labyrinth::getSounds() is deprecated! Please use Sounds::getInstance() instead." << std::endl;
+Sounds* Board::getSounds() {
+	std::cerr << "Board::getSounds() is deprecated! Please use Sounds::getInstance() instead." << std::endl;
 	return Sounds::getInstance();
 }
 
-void Labyrinth::resetScore() {
+void Board::resetScore() {
 	punktestand = 0;
 	lastPunktestand = 0;
 	if (score) {
@@ -616,17 +616,17 @@ void Labyrinth::resetScore() {
 	}
 }
 
-SDL_Surface* Labyrinth::get_superpill_sf() {
+SDL_Surface* Board::get_superpill_sf() {
 	return superpille;
 }
 
-SDL_Surface *Labyrinth::getBackground() {
+SDL_Surface *Board::getBackground() {
 	if (!bgSurface) {
 		bgSurface = Screen::loadImage("gfx/hintergrund2.png");
 	}
 	return bgSurface;
 }
 
-void Labyrinth::setLabyrinthObserver(LabyrinthObserver* labyrinthObserver) {
-	this->vec_observer.push_back(labyrinthObserver);
+void Board::setBoardObserver(BoardObserver* boardObserver) {
+	this->vec_observer.push_back(boardObserver);
 }

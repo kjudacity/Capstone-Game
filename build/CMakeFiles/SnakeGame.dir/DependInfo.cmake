@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/workspace/Capstone/Capstone-Game/src/main.cpp" "/home/workspace/Capstone/Capstone-Game/build/CMakeFiles/SnakeGame.dir/src/main.cpp.o"
   "/home/workspace/Capstone/Capstone-Game/src/renderer.cpp" "/home/workspace/Capstone/Capstone-Game/build/CMakeFiles/SnakeGame.dir/src/renderer.cpp.o"
   "/home/workspace/Capstone/Capstone-Game/src/snake.cpp" "/home/workspace/Capstone/Capstone-Game/build/CMakeFiles/SnakeGame.dir/src/snake.cpp.o"
+  "/home/workspace/Capstone/Capstone-Game/src/stationaryObject.cpp" "/home/workspace/Capstone/Capstone-Game/build/CMakeFiles/SnakeGame.dir/src/stationaryObject.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

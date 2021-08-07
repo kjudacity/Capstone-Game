@@ -6,60 +6,41 @@
 #include "SDL.h"
 
 
-// set object location
-void Object::SetLocation(int x, int y){
-SDL_Point objectLocation{
-      static_cast<int>(x),
-      static_cast<int>(y)};  
-}
-
 // Check location is occupied by Object
-bool Object::Occupied(int x, int y) {
-  if (x == static_cast<int>(objectLocation.x) && y == static_cast<int>(objectLocation.y)) {
-    return true;
-  }
-}
-
 
 void Wall::SetLocation(int x, int y) { //can used if we want the box to be different than the window
-    int wallTopX = x;
-    int wallTopY = y;
+    wallTopX = x;
+    wallTopY = y;
 
     SDL_Point point;
 
-    // loop through the top/bottom
-    for (size_t k = 0; i < wallTopX; k++)
+    // loop through the top/bottom note: subtract one or you end up offscreen
+    for (size_t k = 0; k < wallTopX-1; k++)
     {
         point.x = k;
         point.y = 0;
         wallLocation.push_back(point);
         point.x = k;
-        point.y = wallTopY;
+        point.y = wallTopY-1; 
         wallLocation.push_back(point);
     }
 
-    // loop through the sides
-    for (size_t k = 1; k < wallTopY; k++)
+    // loop through the sides note: subtract one or you end up offscreen
+    for (size_t k = 1; k < wallTopY-1; k++)
     {
         point.x = 0;
         point.y = k;
         wallLocation.push_back(point);
-        point.x = wallTopX;
+        point.x = wallTopX-1;
         point.y = k;
         wallLocation.push_back(point);
     }
 }
 
 
-// Inefficient method to check if cell is occupied by snake.
 bool Wall::Occupied(int x, int y) {
-  if (x == static_cast<int>(objectLocation.x) && y == static_cast<int>(objectLocation.y)) {
+  if (x == 0 || x == wallTopX-1|| y == 0 || y == wallTopY-1) {
     return true;
-  }
-  for (auto const &item : body) {
-    if (x == item.x && y == item.y) {
-      return true;
-    }
   }
   return false;
 }

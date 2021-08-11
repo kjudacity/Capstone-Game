@@ -2,18 +2,19 @@
 #include <iostream>
 #include "SDL.h"
 
+// Initialize game parameters
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
+      wall(grid_width, grid_height), // initialize wall object
+      food(), // initialize food object
+      obstacles(), //initialize obstacle objects
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
-      random_h(0, static_cast<int>(grid_height - 1)), 
-      wall(grid_width, grid_height) {
-  PlaceFood();
-  wall.SetLocation(grid_width, grid_height);
-  std::cout << "grid width" << grid_width << std::endl;
-  std::cout << "gird height" << grid_height << std::endl;
-}
+      random_h(0, static_cast<int>(grid_height - 1))  {
+        PlaceFood();
+      }
 
+// Run the game (no changes)
 void Game::Run(Controller const &controller, Renderer &renderer,
                std::size_t target_frame_duration) {
   Uint32 title_timestamp = SDL_GetTicks();
@@ -30,7 +31,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
     Update();
-    renderer.Render(snake, food, wall);
+    renderer.Render(snake, food, wall, obstacles);
 
     frame_end = SDL_GetTicks();
 
@@ -55,17 +56,22 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   }
 }
 
+// Updated place food to use new find clear location function
 void Game::PlaceFood() {
+  food.SetPoint(Game::FindClearLocation());
+}
+
+// new function that checks to ensure a space doesn't contain the snake, food, the wall, or obstacles
+SDL_Point Game::FindClearLocation() {
   int x, y;
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
     // Check that the location is not occupied by a snake or wall item before placing
-    // food.
-    if (!snake.SnakeCell(x, y) && !wall.Occupied(x, y)) {
-      food.x = x;
-      food.y = y;
-      return;
+    // food or obstacle.
+    if (!snake.SnakeCell(x, y) && !wall.Occupied(x, y) && !obstacles.Occupied(x,y) && !food.Occupied(x,y)) {
+      SDL_Point freepoint{ static_cast<int>(x), static_cast<int>(y)};
+      return freepoint;
     }
   }
 }
@@ -79,17 +85,22 @@ void Game::Update() {
   int new_y = static_cast<int>(snake.head_y);
 
   // Check if there's food over here
-  if (food.x == new_x && food.y == new_y) {
+    if (food.GetLocation().at(0).x == new_x && food.GetLocation().at(0).y == new_y) {
     score++;
     PlaceFood();
+
+    //Add an obstacle every third level
+    if (score % 3 == 0 && score > 1) {
+      obstacles.SetPoint(Game::FindClearLocation());
+    }
+
     // Grow snake and increase speed.
     snake.GrowBody();
     snake.speed += 0.02;
   }
-  // Check if snake contected wall
-  if (wall.Occupied(new_x, new_y)) {
+  // Check if snake contected wall or obstacles
+  if (wall.Occupied(new_x, new_y) || obstacles.Occupied(new_x, new_y)) {
     snake.alive = false;  //snake dies if it did
-    // return;
   }
 }
 

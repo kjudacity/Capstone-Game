@@ -1,69 +1,57 @@
 #ifndef STATION_H
 #define STATION_H
 
-#include <vector>
+#include <random>
 #include "SDL.h"
+#include <iostream>
 
 // Define a generic stationary object (assume single point)
 class StationaryObject{
  public:
-  StationaryObject(int grid_width, int grid_height)
-      : grid_width(grid_width),
-        grid_height(grid_height) {}
 
-  ~StationaryObject() {};
   StationaryObject() {};
+  ~StationaryObject() {};
 
-  virtual std::vector<SDL_Point> GetLocation() { return objectLocation; } // getter function
-
-  virtual void SetLocation(int x, int y) {
-    SDL_Point objectLocation{ static_cast<int>(x), static_cast<int>(y) }; 
-  }; // setter function
+  // Define Setter and Getter Functions
+  std::vector<SDL_Point> GetLocation() { return objectLocation; } // getter function
+  void SetPoint(SDL_Point nextpoint); // setter function
   
-  virtual bool Occupied(int x, int y) {
-    for (auto const &item : objectLocation) {
-      if (x == item.x && y == item.y) {
-        return true;
-      }
-    }
-    return false;
-  }
-
- protected:
+  // define function for testing if a space is occupied by the object
+  bool Occupied(int x, int y);
+    
   std::vector<SDL_Point> objectLocation;
-  int grid_width;
-  int grid_height;
-};
+ };
 
 // Define Wall object
-// extend definition for vector of points
 class Wall: public StationaryObject {
   public:
-    Wall(int grid_width, int grid_height)
-      : grid_width(grid_width),
-        grid_height(grid_height) {}
+    Wall(int grid_width, int grid_height) {SetLocation(grid_width, grid_height);}
     Wall() {};
     ~Wall() {};
-    std::vector<SDL_Point> wallLocation;
-    std::vector<SDL_Point> GetLocation() { return wallLocation; }
-    void SetLocation(int x, int y); // setter function
-    bool Occupied(int x, int y);
+
+    void SetLocation(int x, int y); // wall specific setter function
+    bool Occupied(int x, int y); // more efficient check thats specific to wall
 
   private:
     int wallBottomX{0};
     int wallTopX;
     int wallBottomY{0};
     int wallTopY;
-    int grid_width;
-    int grid_height;
 };
 
-// class Food: public Object {
-  
-// }
+// Redefine food as a stationary object instead of a point
+class Food: public StationaryObject {
+  public:
+    Food() {};
+    ~Food() {};
 
-// class Obstacle: public Object {
-//   public:
+    // setter function - want this to be a single point not vector of many food points
+    void SetPoint(SDL_Point nextpoint) { 
+      objectLocation.clear();
+      objectLocation.push_back(nextpoint); 
+    }; 
 
-// }
+};
+
+
 #endif

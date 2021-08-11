@@ -17,8 +17,9 @@ class Game {
 
  private:
   Snake snake;
-  SDL_Point food;
-
+  Food food; // declare food
+  Wall wall; // declare wall 
+  StationaryObject obstacles; // declare obstacles
   std::random_device dev;
   std::mt19937 engine;
   std::uniform_int_distribution<int> random_w;
@@ -28,6 +29,7 @@ class Game {
 
   void PlaceFood();
   void Update();
+  SDL_Point FindClearLocation(); // declare new function to check if a space is occupied
 };
 
 #endif

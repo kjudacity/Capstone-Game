@@ -17,11 +17,11 @@ The code leverages the starter repo for the Capstone project in the [Udacity C++
 * Object Oriented Programming  
   * The project uses Object Oriented Programming techniques. - Base code already organized into 4 main classes: Game, Snake Controller, and Renderer. Additionally, I added 1 more base class StationaryObject which has two subclassess: Wall and Food. See stationaryObject.h for declariations of the classes on lines 9, 26, and 43.  
   * Classes use appropriate access specifiers for class members. - See stationaryObject.h for declariations of the classes on lines 10, 27, 35, and 44.  
-  * Class constructors utilize member initialization lists. - See stationaryObject.h for declariations of the classes on lines 28.  
-  * Classes abstract implementation details from their interfaces. - The base code already started this and it was continued through with StationaryObjects, Wall, and Food.   
+  * Class constructors utilize member initialization lists. - See stationaryObject.h on line 28.  
+  * Classes abstract implementation details from their interfaces. - The base code already started this and it was continued through with StationaryObjects, Wall, and Food in stationaryObject.h. Additionally comments were added to ensure understanding.    
   * Classes encapsulate behavior. - The base code started this and it was continued through with StationaryObjects, Wall, and Food, specifically the function Occupied in stationaryObject.cpp lines 11 and 56.  
   * Classes follow an appropriate inheritance hierarchy. - This can be seen in stationaryObject.h for declariations of the classes on lines 9, 26, and 43.  
-  * Overloaded functions allow the same function to operate on different parameters. -Yes Occupied works differently for Wall - see stationaryObject.cpp lines 11 and 56.  
+  * Overloaded functions allow the same function to operate on different parameters. - Occupied works differently for Wall - see stationaryObject.cpp lines 11 and 56.  
   
 ## Dependencies for Running Locally
 * cmake >= 3.7
